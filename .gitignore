@@ -1,0 +1,17 @@
+#Python временные файлы
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+#Виртуальное окружение Python
+venv/
+env/
+.env
+.venv/
+
+#Системные файлы
+Thumbs.db
+
+# Файлы
+.idea/
