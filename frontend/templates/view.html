@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }} - Детали</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Детали книги</h1>
+
+        <div class="book-details">
+            <div class="detail-row">
+                <span class="detail-label">ID:</span>
+                <span class="detail-value">{{ book.id }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Название:</span>
+                <span class="detail-value">{{ book.title }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Автор:</span>
+                <span class="detail-value">{{ book.author }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Год издания:</span>
+                <span class="detail-value">{{ book.year }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Издательство:</span>
+                <span class="detail-value">{{ book.publisher }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Страниц:</span>
+                <span class="detail-value">{{ book.pages }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">ISBN:</span>
+                <span class="detail-value">{{ book.isbn }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Количество:</span>
+                <span class="detail-value">{{ book.quantity }} шт.</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Цена:</span>
+                <span class="detail-value">{{ book.price }} ₽</span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('edit_book', book_id=book.id) }}" class="btn btn-primary">Редактировать</a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Назад к списку</a>
+        </div>
+    </div>
+</body>
+</html>
