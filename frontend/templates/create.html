@@ -1,10 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление книги</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
+        <h1>Добавление новой книги</h1>
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="book-form">
+            <div class="form-group">
+                <label>Название книги *</label>
+                <input type="text" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label>Автор *</label>
+                <input type="text" name="author" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Год издания *</label>
+                    <input type="number" name="year" required min="1450" max="2025">
+                </div>
+
+                <div class="form-group">
+                    <label>Количество страниц *</label>
+                    <input type="number" name="pages" required min="1" max="5000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Издательство *</label>
+                <input type="text" name="publisher" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ISBN *</label>
+                    <input type="text" name="isbn" required placeholder="978-5-17-123456-7">
+                </div>
+
+                <div class="form-group">
+                    <label>Количество экземпляров *</label>
+                    <input type="number" name="quantity" required min="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Цена (₽) *</label>
+                <input type="number" name="price" required min="0.01" step="0.01">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
