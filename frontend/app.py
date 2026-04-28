@@ -7,7 +7,6 @@ app.secret_key = "secret-key-for-flash-messages"
 API_URL = "http://127.0.0.1:8000"
 
 
-# Главная страница - список книг
 @app.route("/")
 def index():
     try:
@@ -20,11 +19,9 @@ def index():
     except requests.exceptions.ConnectionError:
         books = []
         flash("Не удалось подключиться к API серверу. Убедитесь, что backend запущен", "error")
-
     return render_template("index.html", books=books)
 
 
-# Просмотр одной книги
 @app.route("/book/<int:book_id>")
 def view_book(book_id):
     try:
@@ -40,7 +37,6 @@ def view_book(book_id):
         return redirect(url_for("index"))
 
 
-# Форма добавления книги
 @app.route("/create", methods=["GET", "POST"])
 def create_book():
     if request.method == "POST":
@@ -53,25 +49,22 @@ def create_book():
                 "pages": int(request.form.get("pages")),
                 "isbn": request.form.get("isbn"),
                 "quantity": int(request.form.get("quantity")),
-                "price": float(request.form.get("price"))
+                "genre": request.form.get("genre")
             }
-
             response = requests.post(f"{API_URL}/books", json=data)
-
             if response.status_code == 201:
                 flash("Книга успешно добавлена", "success")
                 return redirect(url_for("index"))
             else:
-                flash(f"Ошибка: {response.json().get('detail', 'Неизвестная ошибка')}", "error")
+                error_detail = response.json().get('detail', 'Неизвестная ошибка')
+                flash(f"Ошибка: {error_detail}", "error")
         except ValueError as e:
             flash(f"Ошибка преобразования данных: {e}", "error")
         except requests.exceptions.ConnectionError:
             flash("Ошибка подключения к серверу", "error")
-
     return render_template("create.html")
 
 
-# Форма редактирования книги
 @app.route("/edit/<int:book_id>", methods=["GET", "POST"])
 def edit_book(book_id):
     if request.method == "POST":
@@ -84,22 +77,19 @@ def edit_book(book_id):
                 "pages": int(request.form.get("pages")),
                 "isbn": request.form.get("isbn"),
                 "quantity": int(request.form.get("quantity")),
-                "price": float(request.form.get("price"))
+                "genre": request.form.get("genre")
             }
-
             response = requests.put(f"{API_URL}/books/{book_id}", json=data)
-
             if response.status_code == 200:
                 flash("Книга успешно обновлена", "success")
                 return redirect(url_for("index"))
             else:
-                flash(f"Ошибка: {response.json().get('detail', 'Неизвестная ошибка')}", "error")
+                error_detail = response.json().get('detail', 'Неизвестная ошибка')
+                flash(f"Ошибка: {error_detail}", "error")
         except ValueError as e:
             flash(f"Ошибка преобразования данных: {e}", "error")
         except requests.exceptions.ConnectionError:
             flash("Ошибка подключения к серверу", "error")
-
-    # GET запрос - получаем данные книги для заполнения формы
     try:
         response = requests.get(f"{API_URL}/books/{book_id}")
         if response.status_code == 200:
@@ -113,7 +103,6 @@ def edit_book(book_id):
         return redirect(url_for("index"))
 
 
-# Удаление книги
 @app.route("/delete/<int:book_id>")
 def delete_book(book_id):
     try:
@@ -124,7 +113,27 @@ def delete_book(book_id):
             flash("Ошибка при удалении книги", "error")
     except requests.exceptions.ConnectionError:
         flash("Ошибка подключения к серверу", "error")
+    return redirect(url_for("index"))
 
+
+@app.route("/delete-many", methods=["POST"])
+def delete_many_books():
+    """Массовое удаление книг"""
+    book_ids = request.form.getlist("book_ids")
+    if not book_ids:
+        flash("Не выбрано ни одной книги для удаления", "error")
+        return redirect(url_for("index"))
+    # Преобразуем в int
+    ids = [int(pid) for pid in book_ids]
+    try:
+        response = requests.delete(f"{API_URL}/books/delete-many", json={"ids": ids})
+        if response.status_code == 200:
+            data = response.json()
+            flash(f"Успешно удалено {data['deleted_count']} книг", "success")
+        else:
+            flash("Ошибка при массовом удалении", "error")
+    except requests.exceptions.ConnectionError:
+        flash("Ошибка подключения к серверу", "error")
     return redirect(url_for("index"))
 
 

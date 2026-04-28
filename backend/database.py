@@ -6,7 +6,7 @@ DB_NAME = "app.db"
 def get_connection():
     """Получение соединения с БД"""
     conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row  # Чтобы получать данные как словари
+    conn.row_factory = sqlite3.Row
     return conn
 
 
@@ -25,7 +25,7 @@ def init_db():
             pages INTEGER NOT NULL,
             isbn TEXT NOT NULL UNIQUE,
             quantity INTEGER NOT NULL DEFAULT 0,
-            price REAL NOT NULL
+            genre TEXT NOT NULL
         )
     """)
 
